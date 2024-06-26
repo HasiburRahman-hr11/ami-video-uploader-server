@@ -33,7 +33,6 @@ const userSchema = new Schema(
       data: Buffer,
       contentType: String,
     },
-    // Array to store mission ids the user has participated in
     videos: [
       {
         type: Schema.Types.ObjectId,

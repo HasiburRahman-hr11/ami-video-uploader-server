@@ -16,6 +16,11 @@ const videoSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    cloudinaryId: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

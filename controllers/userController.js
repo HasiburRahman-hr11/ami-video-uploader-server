@@ -139,25 +139,36 @@ exports.loginWithEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(200).json({ message: "User not found" });
+      return res.status(409).json({ message: "User not found" });
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(200).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
     const token = jwt.sign(
       {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        profilePicture: user.profilePicture,
-        bio: user?.bio || "",
+        email: user.email
       },
       process.env.JWT_SECRET
     );
-    res.json({ token });
+
+    let userData = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+    };
+    if (user?.profilePicture) {
+      userData.profilePicture = user.profilePicture;
+    }
+    if (user?.bio) {
+      userData.bio = user.bio;
+    }
+    res.json({ user: userData, token });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -166,8 +177,6 @@ exports.loginWithEmail = async (req, res) => {
 
 exports.editUserProfile = async (req, res) => {
   try {
-    console.log("Request received");
-    console.log("File received:", req.file);
     const { firstName, lastName, bio, phone } = req.body;
     const userId = req.params.userId;
 

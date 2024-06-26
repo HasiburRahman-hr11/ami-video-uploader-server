@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
+const videoRoutes = require('./routes/videoRoutes');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors());
 
 // Routes
 app.use(userRoutes);
+app.use(videoRoutes);
 
 app.get("/", async (req, res) => {
   res.send({
